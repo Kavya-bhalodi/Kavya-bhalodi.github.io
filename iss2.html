@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link rel="stylesheet" href="styles.css"> -->
+  <title>Blog Section</title>
+</head>
+<style>
+    body {
+
+        font-family: 'Arial', sans-serif;
+        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy_88BI49aWZ5gqiQGr_j7ePImeaTk0vU11Q&usqp=CAU");
+        background-size: cover;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      
+      .blog-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+      }
+      
+      .blog {
+        border: 1px solid #ddd;
+        background-color: #fff;
+        padding: 20px;
+        width: 300px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+      }
+      
+      .blog:hover {
+        transform: scale(1.05);
+      }
+      
+      h2 {
+        color: #333;
+      }
+      
+      p {
+        color: #666;
+      }
+      
+      .like-btn {
+        background-color: #3498db;
+        color: #fff;
+        padding: 5px 10px; 
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+      
+      .like-btn:hover {
+        background-color: #2980b9;
+      }
+      
+      .like-count {
+        color: #3498db;
+        font-weight: bold;
+        margin-left: 5px;
+      }
+      
+      .comments-section {
+        margin-top: 10px;
+      }
+      
+      textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      
+      button {
+        background-color: #3498db;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+      
+      button:hover {
+        background-color: #2980b9;
+      }
+      
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      
+      ul li {
+        margin-bottom: 8px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+      }
+      
+      
+</style>
+
+<body>
+  
+  <div class="blog-container">
+    <div class="blog" id="blog1">
+      <h2>Blog 1</h2>
+      <p>This is the content of Blog 1.</p>
+      <button class="like-btn" onclick="like('blog1')">Like</button> 👍
+      <span class="like-count" id="likeCount1">0</span>
+      <div class="comments-section">
+        <h3>Comments</h3>
+        <textarea id="commentInput1" placeholder="Write a comment"></textarea>
+        <button onclick="addComment('blog1')">Add Comment</button> 
+        <ul id="commentsList1"></ul>
+      </div>
+    </div>
+
+    <div class="blog" id="blog2">
+      <h2>Blog 2</h2>
+      <p>This is the content of Blog 2.</p>
+      <button class="like-btn" onclick="like('blog2')">Like</button> 👍
+      <span class="like-count" id="likeCount2">0</span>
+      <div class="comments-section">
+        <h3>Comments</h3>
+        <textarea id="commentInput2" placeholder="Write a comment"></textarea>
+        <button onclick="addComment('blog2')">Add Comment</button>
+        <ul id="commentsList2"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script >
+    // Function to handle likes
+function like(blogId) {
+    const likeCountElement = document.getElementById(`likeCount${blogId.charAt(blogId.length - 1)}`);
+    let likeCount = parseInt(likeCountElement.textContent);
+    likeCount++;
+    likeCountElement.textContent = likeCount;
+  
+    // Save like count to local storage
+    localStorage.setItem(blogId + '_likes', likeCount);
+  }
+  
+  // Function to add comments
+  function addComment(blogId) {
+    const commentInput = document.getElementById(`commentInput${blogId.charAt(blogId.length - 1)}`);
+    const commentsList = document.getElementById(`commentsList${blogId.charAt(blogId.length - 1)}`);
+  
+    const commentText = commentInput.value.trim();
+    if (commentText !== '') {
+      const newComment = document.createElement('li');
+      newComment.textContent = commentText;
+      commentsList.appendChild(newComment);
+      commentInput.value = '';
+  
+      // Save comments to local storage
+      let comments = JSON.parse(localStorage.getItem(blogId + '_comments')) || [];
+      comments.push(commentText);
+      localStorage.setItem(blogId + '_comments', JSON.stringify(comments));
+    }
+  }
+  
+  // Load data from local storage on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    // Load likes
+    for (let i = 1; i <= 2; i++) {
+      const blogId = `blog${i}`;
+      const likeCountElement = document.getElementById(`likeCount${i}`);
+      const storedLikes = localStorage.getItem(blogId + '_likes');
+      likeCountElement.textContent = storedLikes ? storedLikes : '0';
+    }
+  
+    // Load comments
+    for (let i = 1; i <= 2; i++) {
+      const blogId = `blog${i}`;
+      const commentsList = document.getElementById(`commentsList${i}`);
+      const storedComments = JSON.parse(localStorage.getItem(blogId + '_comments')) || [];
+      storedComments.forEach(comment => {
+        const newComment = document.createElement('li');
+        newComment.textContent = comment;
+        commentsList.appendChild(newComment);
+      });
+    }
+  });
+  
+  </script>
+</body>
+</html>
